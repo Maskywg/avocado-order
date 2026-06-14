@@ -369,12 +369,12 @@
 
     function resetProduct(id) {
       const originals = [
-        { id: 1, originPrice: 35, price: 25, stock: 200 },
-        { id: 2, originPrice: 55, price: 40, stock: 150 },
-        { id: 3, originPrice: 299, price: 220, stock: 50 },
-        { id: 4, originPrice: 380, price: 320, stock: 80 },
-        { id: 5, originPrice: 150, price: 120, stock: 100 },
-        { id: 6, originPrice: 299, price: 250, stock: 60 }
+        { id: 1, originPrice: 40, price: 30, stock: 200 },
+        { id: 2, originPrice: 40, price: 30, stock: 150 },
+        { id: 3, originPrice: 45, price: 35, stock: 150 },
+        { id: 4, originPrice: 50, price: 40, stock: 120 },
+        { id: 5, originPrice: 50, price: 40, stock: 100 },
+        { id: 6, originPrice: 699, price: 550, stock: 30 }
       ];
       const orig = originals.find(x => x.id === id);
       const p = PRODUCTS.find(x => x.id === id);

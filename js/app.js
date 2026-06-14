@@ -36,12 +36,12 @@ const GS = {
 };
 
 const DEFAULT_PRODUCTS = [
-  { id: 1, name: '經典哈斯酪梨', emoji: '🥑', desc: '口感綿密，油脂豐富，最受歡迎的品種', originPrice: 35, price: 25, unit: '顆', stock: 200 },
-  { id: 2, name: '有機大顆酪梨', emoji: '🥑', desc: '有機認證，果肉飽滿，重量級首選', originPrice: 55, price: 40, unit: '顆', stock: 150 },
-  { id: 3, name: '酪梨禮盒 (6入)', emoji: '🎁', desc: '精選頂級酪梨，送禮自用兩相宜', originPrice: 299, price: 220, unit: '盒', stock: 50 },
-  { id: 4, name: '酪梨油 250ml', emoji: '🫒', desc: '冷壓初榨，適合沙拉涼拌', originPrice: 380, price: 320, unit: '瓶', stock: 80 },
-  { id: 5, name: '冷凍酪梨果泥', emoji: '🧊', desc: '去核去皮，直接打成果昔超方便', originPrice: 150, price: 120, unit: '包', stock: 100 },
-  { id: 6, name: '酪梨麵膜 (5片裝)', emoji: '🧴', desc: '天然酪梨萃取，保濕滋潤', originPrice: 299, price: 250, unit: '盒', stock: 60 }
+  { id: 1, name: '黑美人 (大內早生)', emoji: '🥑', desc: '產期最早，果皮光滑，口感細緻綿密', originPrice: 40, price: 30, unit: '斤', stock: 200 },
+  { id: 2, name: '菜寮仔 (加林一號)', emoji: '🥑', desc: '在地品種，果肉金黃，風味濃郁', originPrice: 40, price: 30, unit: '斤', stock: 150 },
+  { id: 3, name: '紅心圓 (清進二號)', emoji: '🥑', desc: '果形圓潤，果肉厚實，入口滑順', originPrice: 45, price: 35, unit: '斤', stock: 150 },
+  { id: 4, name: '哈里馬納 (953)', emoji: '🥑', desc: '大果品種，油脂豐富，口感極佳', originPrice: 50, price: 40, unit: '斤', stock: 120 },
+  { id: 5, name: '黑金晚生', emoji: '🥑', desc: '晚作品種，果皮黑亮，風味香甜', originPrice: 50, price: 40, unit: '斤', stock: 100 },
+  { id: 6, name: '綜合酪梨禮盒', emoji: '🎁', desc: '多種品項搭配，送禮自用兩相宜', originPrice: 699, price: 550, unit: '盒', stock: 30 }
 ];
 
 let PRODUCTS = [];
