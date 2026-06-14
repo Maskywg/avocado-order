@@ -202,6 +202,20 @@
       else if (tab === 'users') renderAdminUsers();
     }
 
+    async function syncMembersFromGS() {
+      if (!getGsUrl()) { showToast('請先設定 Google Sheets 網址'); return; }
+      const members = await GS.getMembers();
+      if (members && members.length > 0) {
+        let users = getUsers();
+        members.forEach(m => { if (!users.find(u => u.email === m.email)) users.push(m); });
+        DB.set('users', users);
+        showToast(`同步 ${members.length} 位會員`);
+        renderAdminUsers();
+      } else {
+        showToast('無會員資料或同步失敗');
+      }
+    }
+
     function getOrders() { return DB.get('orders', []); }
     function saveOrders(orders) { DB.set('orders', orders); }
     function getUsers() { return DB.get('users', []); }
@@ -397,22 +411,60 @@
       }
     }
 
-    function renderAdminUsers() {
-      const users = getUsers();
+    async function renderAdminUsers() {
+      let users = getUsers();
+      const gsUrl = getGsUrl();
+      let gsMembers = [];
+      if (gsUrl) {
+        gsMembers = await GS.getMembers() || [];
+      }
+      const allEmails = new Set();
+      const merged = [];
+      gsMembers.forEach(m => {
+        if (!allEmails.has(m.email)) {
+          allEmails.add(m.email);
+          merged.push({ ...m, source: '📊 試算表' });
+        }
+      });
+      users.forEach(u => {
+        if (!allEmails.has(u.email)) {
+          allEmails.add(u.email);
+          merged.push({ ...u, source: '💻 本機' });
+        }
+      });
       document.getElementById('adminMain').innerHTML = `
-        <div class="admin-header"><h1>👥 會員管理</h1><p>共 ${users.length} 位會員</p></div>
+        <div class="admin-header">
+          <h1>👥 會員管理</h1>
+          <p>共 ${merged.length} 位會員（試算表 ${gsMembers.length} 位）</p>
+          <div style="margin-top:8px"><button class="btn btn-sm btn-primary" onclick="syncMembersFromGS()">🔄 同步會員</button></div>
+        </div>
         <table class="admin-table">
-          <thead><tr><th>#</th><th>暱稱</th><th>電子郵件</th><th>註冊時間</th></tr></thead>
+          <thead><tr><th>#</th><th>暱稱</th><th>電子郵件</th><th>來源</th><th>註冊時間</th></tr></thead>
           <tbody>
-            ${users.length === 0 ? '<tr><td colspan="4" style="text-align:center;color:var(--gray-500)">暫無會員</td></tr>' :
-            users.map((u, i) => `<tr><td>${i + 1}</td><td><strong>${u.name}</strong></td><td>${u.email}</td><td style="color:var(--gray-500)">-</td></tr>`).join('')}
+            ${merged.length === 0 ? '<tr><td colspan="5" style="text-align:center;color:var(--gray-500)">暫無會員</td></tr>' :
+            merged.map((u, i) => `<tr>
+              <td>${i + 1}</td>
+              <td><strong>${u.name || '-'}</strong></td>
+              <td>${u.email || '-'}</td>
+              <td style="font-size:12px">${u.source || '-'}</td>
+              <td style="color:var(--gray-500);font-size:13px">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('zh-TW') : '-'}</td>
+            </tr>`).join('')}
           </tbody>
         </table>
       `;
     }
 
     async function initAdmin() {
-      if (getGsUrl()) await syncOrdersFromGS();
+      if (getGsUrl()) {
+        await syncOrdersFromGS();
+        await GS.getMembers().then(members => {
+          if (members && members.length > 0) {
+            let users = getUsers();
+            members.forEach(m => { if (!users.find(u => u.email === m.email)) users.push(m); });
+            DB.set('users', users);
+          }
+        });
+      }
       renderDashboard();
     }
     initAdmin();
