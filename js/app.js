@@ -74,6 +74,7 @@ function init() {
   if (document.getElementById('productGrid')) renderProducts();
   if (document.getElementById('cartBadge')) updateCartBadge();
   if (state.user) updateUIForUser();
+  if (document.getElementById('bgMusic')) initAutoplayMusic();
 }
 
 function showToast(msg) {
@@ -376,5 +377,42 @@ document.addEventListener('click', function(e) {
   const modal = e.target.closest('.modal-overlay');
   if (modal && e.target === modal) modal.classList.remove('active');
 });
+
+function toggleMusic() {
+  const music = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicToggle');
+  if (!music || !btn) return;
+  if (music.paused) {
+    music.play().then(() => {
+      btn.classList.add('playing');
+      btn.textContent = '🎵';
+      showToast('🎵 音樂已開啟');
+    }).catch(() => {
+      showToast('❌ 無法播放音樂，請先點擊網頁');
+    });
+  } else {
+    music.pause();
+    btn.classList.remove('playing');
+    btn.textContent = '🔇';
+    showToast('🔇 音樂已暫停');
+  }
+}
+
+function initAutoplayMusic() {
+  const startPlay = () => {
+    const music = document.getElementById('bgMusic');
+    const btn = document.getElementById('musicToggle');
+    if (music && btn && music.paused) {
+      music.play().then(() => {
+        btn.classList.add('playing');
+        btn.textContent = '🎵';
+      }).catch(() => {});
+    }
+    document.removeEventListener('click', startPlay);
+    document.removeEventListener('touchstart', startPlay);
+  };
+  document.addEventListener('click', startPlay);
+  document.addEventListener('touchstart', startPlay);
+}
 
 document.addEventListener('DOMContentLoaded', init);
