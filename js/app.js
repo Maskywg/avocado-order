@@ -9,24 +9,37 @@ const DB = {
 function gsUrl() { return DB.get('gsApiUrl', ''); }
 
 const GS = {
-  async postOrder(order) {
+  async post(type, data) {
     const url = gsUrl();
     if (!url) return false;
     try {
       await fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(order)
+        method: 'POST', mode: 'no-cors',
+        body: JSON.stringify({ type, ...data })
       });
       return true;
     } catch { return false; }
   },
+  async postOrder(order) { return this.post('order', order); },
+  async postMember(member) { return this.post('member', member); },
   getOrders() {
     return new Promise(resolve => {
       const url = gsUrl();
       if (!url) return resolve(null);
       const cb = 'gs_cb_' + Date.now();
       window[cb] = data => { delete window[cb]; document.head.removeChild(s); resolve(data.orders || []); };
+      const s = document.createElement('script');
+      s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+      s.onerror = () => resolve(null);
+      document.head.appendChild(s);
+    });
+  },
+  getMembers() {
+    return new Promise(resolve => {
+      const url = gsUrl();
+      if (!url) return resolve(null);
+      const cb = 'gs_cb_' + Date.now();
+      window[cb] = data => { delete window[cb]; document.head.removeChild(s); resolve(data.members || []); };
       const s = document.createElement('script');
       s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
       s.onerror = () => resolve(null);
@@ -284,6 +297,7 @@ function handleRegister(e) {
   DB.set('user', state.user);
   updateUIForUser();
   toggleMember();
+  GS.postMember({ name, email, password, createdAt: new Date().toISOString() });
   showToast(`歡迎加入，${name}！`);
 }
 

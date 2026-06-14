@@ -254,8 +254,15 @@
 
     async function doSync() {
       const ok = await syncOrdersFromGS();
-      if (ok) showToast('同步完成！');
-      else showToast('同步失敗，請確認：1) 部署權限設為「任何人」 2) 試算表有「訂單」工作表');
+      if (ok) {
+        const members = await GS.getMembers();
+        if (members && members.length > 0) {
+          let users = getUsers();
+          members.forEach(m => { if (!users.find(u => u.email === m.email)) users.push(m); });
+          DB.set('users', users);
+        }
+        showToast('同步完成！');
+      } else showToast('同步失敗，請確認：1) 部署權限設為「任何人」 2) 試算表有「訂單」工作表');
       renderDashboard();
     }
 
