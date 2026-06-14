@@ -1,5 +1,6 @@
 const SHEET_ORDERS = '訂單';
 const SHEET_MEMBERS = '會員名單';
+const SHEET_CONTACTS = '聯絡訊息';
 
 function getSheetData(sheetName) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
@@ -41,7 +42,13 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     if (data.type === 'member') {
       const sheet = ensureSheet(SHEET_MEMBERS, ['name', 'email', 'password', 'createdAt']);
-      sheet.appendRow([data.name, data.email, data.password, data.createdAt || new Date().toISOString()]);
+      sheet.appendRow([data.name, data.email, data.password || '', data.createdAt || new Date().toISOString()]);
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    if (data.type === 'contact') {
+      const sheet = ensureSheet(SHEET_CONTACTS, ['name', 'email', 'message', 'createdAt']);
+      sheet.appendRow([data.name, data.email, data.message || '', data.createdAt || new Date().toISOString()]);
       return ContentService.createTextOutput(JSON.stringify({ success: true }))
         .setMimeType(ContentService.MimeType.JSON);
     }

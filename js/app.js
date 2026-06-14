@@ -22,6 +22,7 @@ const GS = {
   },
   async postOrder(order) { return this.post('order', order); },
   async postMember(member) { return this.post('member', member); },
+  async postContact(msg) { return this.post('contact', msg); },
   getOrders() {
     return new Promise(resolve => {
       const url = gsUrl();
@@ -282,6 +283,16 @@ function handleLogin(e) {
   updateUIForUser();
   toggleMember();
   showToast(`歡迎回來，${user.name}！`);
+}
+
+function handleContact(e) {
+  e.preventDefault();
+  const name = e.target.querySelector('input[type="text"]').value;
+  const email = e.target.querySelector('input[type="email"]').value;
+  const message = e.target.querySelector('textarea').value;
+  GS.postContact({ name, email, message, createdAt: new Date().toISOString() });
+  e.target.reset();
+  showToast('✅ 訊息已送出，感謝您！');
 }
 
 function handleRegister(e) {

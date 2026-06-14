@@ -102,7 +102,7 @@
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https://qrc.afa.gov.tw/blog/0501006032" alt="QR" style="border-radius:4px">
           </div>
         </div>
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" onsubmit="handleContact(event)">
           <input type="text" placeholder="您的姓名" required>
           <input type="email" placeholder="電子郵件" required>
           <textarea placeholder="訊息內容" rows="4" required></textarea>
