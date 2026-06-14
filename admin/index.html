@@ -263,7 +263,9 @@
 
     function saveGsUrl() {
       const url = document.getElementById('gsUrlInput').value.trim();
-      if (url) { setGsUrl(url); showToast('已儲存 Google Sheets API 網址'); }
+      if (!url) { showToast('請輸入網址'); return; }
+      setGsUrl(url);
+      showToast('✅ 儲存成功');
     }
 
     async function doSync() {
@@ -275,8 +277,8 @@
           members.forEach(m => { if (!users.find(u => u.email === m.email)) users.push(m); });
           DB.set('users', users);
         }
-        showToast('同步完成！');
-      } else showToast('同步失敗，請確認：1) 部署權限設為「任何人」 2) 試算表有「訂單」工作表');
+        showToast('✅ 同步成功');
+      } else showToast('❌ 同步失敗，請確認網址是否正確');
       renderDashboard();
     }
 
