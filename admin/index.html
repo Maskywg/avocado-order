@@ -434,26 +434,71 @@
           merged.push({ ...u, source: '💻 本機' });
         }
       });
+
+      const orders = getOrders();
+      const memberStats = {};
+      orders.forEach(o => {
+        const email = o.delivery?.email || o.user?.email || o.userId;
+        if (!email) return;
+        if (!memberStats[email]) memberStats[email] = { count: 0, total: 0 };
+        memberStats[email].count++;
+        memberStats[email].total += o.total || 0;
+      });
+
+      function getMemberBadge(count) {
+        if (count >= 10) return '⭐ VIP';
+        if (count >= 3) return '🌟 常客';
+        if (count >= 1) return '🛒 已交易';
+        return '📝 僅註冊';
+      }
+
       document.getElementById('adminMain').innerHTML = `
         <div class="admin-header">
           <h1>👥 會員管理</h1>
           <p>共 ${merged.length} 位會員（試算表 ${gsMembers.length} 位）</p>
-          <div style="margin-top:8px"><button class="btn btn-sm btn-primary" onclick="syncMembersFromGS()">🔄 同步會員</button></div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-sm btn-primary" onclick="syncMembersFromGS()">🔄 同步會員</button>
+            <input type="text" id="memberSearch" placeholder="🔍 搜尋會員名稱或 Email"
+              style="flex:1;min-width:160px;padding:8px 12px;border:2px solid var(--gray-200);border-radius:6px;font-size:14px"
+              oninput="filterMemberTable()">
+          </div>
         </div>
-        <table class="admin-table">
-          <thead><tr><th>#</th><th>暱稱</th><th>電子郵件</th><th>來源</th><th>註冊時間</th></tr></thead>
-          <tbody>
-            ${merged.length === 0 ? '<tr><td colspan="5" style="text-align:center;color:var(--gray-500)">暫無會員</td></tr>' :
-            merged.map((u, i) => `<tr>
-              <td>${i + 1}</td>
-              <td><strong>${u.name || '-'}</strong></td>
-              <td>${u.email || '-'}</td>
-              <td style="font-size:12px">${u.source || '-'}</td>
-              <td style="color:var(--gray-500);font-size:13px">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('zh-TW') : '-'}</td>
-            </tr>`).join('')}
+        <table class="admin-table" id="memberTable">
+          <thead><tr>
+            <th>#</th><th>暱稱</th><th>電子郵件</th><th>訂單數</th><th>消費總額</th><th>等級</th><th>來源</th><th>註冊時間</th>
+          </tr></thead>
+          <tbody id="memberBody">
           </tbody>
         </table>
       `;
+      window._mergedMembers = merged;
+      window._memberStats = memberStats;
+      filterMemberTable();
+    }
+
+    function filterMemberTable() {
+      const q = (document.getElementById('memberSearch')?.value || '').toLowerCase();
+      const merged = window._mergedMembers || [];
+      const stats = window._memberStats || {};
+      const filtered = merged.filter(u =>
+        (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
+      );
+      function getBadge(c) { if (c >= 10) return '⭐ VIP'; if (c >= 3) return '🌟 常客'; if (c >= 1) return '🛒 已交易'; return '📝 僅註冊'; }
+      document.getElementById('memberBody').innerHTML = filtered.length === 0
+        ? '<tr><td colspan="8" style="text-align:center;color:var(--gray-500)">查無會員</td></tr>'
+        : filtered.map((u, i) => {
+            const s = stats[u.email] || { count: 0, total: 0 };
+            return `<tr>
+              <td>${i + 1}</td>
+              <td><strong>${u.name || '-'}</strong></td>
+              <td>${u.email || '-'}</td>
+              <td>${s.count}</td>
+              <td>NT$${(s.total || 0).toLocaleString()}</td>
+              <td>${getBadge(s.count)}</td>
+              <td style="font-size:12px">${u.source || '-'}</td>
+              <td style="color:var(--gray-500);font-size:13px">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('zh-TW') : '-'}</td>
+            </tr>`;
+          }).join('');
     }
 
     async function initAdmin() {
