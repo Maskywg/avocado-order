@@ -244,8 +244,8 @@
           <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <input type="text" id="gsUrlInput" placeholder="Google Apps Script 網址" value="${gsUrl}"
               style="flex:1;min-width:200px;padding:8px 12px;border:2px solid var(--gray-200);border-radius:6px;font-size:14px">
-            <button class="btn btn-sm btn-primary" onclick="saveGsUrl()">💾 設定</button>
-            <button class="btn btn-sm ${gsUrl ? 'btn-primary' : 'btn-outline'}" onclick="doSync()">🔄 同步訂單</button>
+             <button type="button" class="btn btn-sm btn-primary" onclick="saveGsUrl()">💾 設定</button>
+            <button type="button" class="btn btn-sm ${gsUrl ? 'btn-primary' : 'btn-outline'}" onclick="doSync()">🔄 同步訂單</button>
           </div>
         </div>
         <div class="admin-grid">
