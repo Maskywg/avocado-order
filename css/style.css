@@ -131,32 +131,83 @@ body {
   text-align: center;
   position: relative;
   overflow: hidden;
+  perspective: 800px;
 }
 
-.hero::before {
-  content: '';
+.hero-scene {
   position: absolute;
-  width: 600px;
-  height: 600px;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-float {
+  position: absolute;
+  font-size: 60px;
+  animation: float3d 8s ease-in-out infinite;
+  transform-style: preserve-3d;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.hero-float:nth-child(1) { top: 10%; left: 5%; font-size: 50px; animation-delay: 0s; animation-duration: 9s; }
+.hero-float:nth-child(2) { top: 20%; right: 10%; font-size: 70px; animation-delay: 1s; animation-duration: 11s; }
+.hero-float:nth-child(3) { top: 60%; left: 8%; font-size: 45px; animation-delay: 2s; animation-duration: 10s; }
+.hero-float:nth-child(4) { top: 70%; right: 5%; font-size: 80px; animation-delay: 0.5s; animation-duration: 12s; }
+.hero-float:nth-child(5) { top: 40%; left: 50%; font-size: 55px; animation-delay: 1.5s; animation-duration: 8s; }
+.hero-float:nth-child(6) { top: 5%; left: 40%; font-size: 35px; animation-delay: 3s; animation-duration: 13s; }
+.hero-float:nth-child(7) { top: 80%; left: 30%; font-size: 65px; animation-delay: 2.5s; animation-duration: 10s; }
+.hero-float:nth-child(8) { top: 30%; left: 80%; font-size: 40px; animation-delay: 4s; animation-duration: 9s; }
+
+@keyframes float3d {
+  0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg) scale(1); }
+  25% { transform: translateY(-30px) rotateX(10deg) rotateY(20deg) scale(1.05); }
+  50% { transform: translateY(-10px) rotateX(-5deg) rotateY(40deg) scale(0.95); }
+  75% { transform: translateY(-40px) rotateX(15deg) rotateY(10deg) scale(1.02); }
+}
+
+.hero-glow {
+  position: absolute;
   border-radius: 50%;
-  background: rgba(255,255,255,0.03);
-  top: -100px;
-  right: -100px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  animation: glowPulse 4s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.hero::after {
-  content: '🥑';
+.hero-glow:nth-child(9) { width: 500px; height: 500px; top: -100px; right: -100px; animation-delay: 0s; }
+.hero-glow:nth-child(10) { width: 400px; height: 400px; bottom: -80px; left: -80px; animation-delay: 2s; }
+.hero-glow:nth-child(11) { width: 300px; height: 300px; top: 40%; left: 30%; animation-delay: 1s; }
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.hero-main-avocado {
   position: absolute;
-  font-size: 300px;
-  opacity: 0.06;
-  bottom: -50px;
-  left: -50px;
+  font-size: 180px;
+  opacity: 0.07;
+  animation: rotate3d 12s linear infinite;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+@keyframes rotate3d {
+  0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  33% { transform: rotateX(30deg) rotateY(120deg) rotateZ(10deg); }
+  66% { transform: rotateX(-20deg) rotateY(240deg) rotateZ(-5deg); }
+  100% { transform: rotateX(0deg) rotateY(360deg) rotateZ(0deg); }
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   padding: 20px;
+  animation: heroFadeIn 1.5s ease-out;
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(30px) rotateX(-5deg); }
+  to { opacity: 1; transform: translateY(0) rotateX(0deg); }
 }
 
 .hero-content h1 {
@@ -164,12 +215,30 @@ body {
   color: var(--white);
   margin-bottom: 16px;
   font-weight: 800;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.3);
+  animation: textFloat3d 6s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes textFloat3d {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.02); }
 }
 
 .hero-content p {
   font-size: clamp(16px, 2vw, 22px);
   color: rgba(255,255,255,0.85);
   margin-bottom: 32px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+}
+
+.hero-content .btn {
+  animation: btnEntrance 1s ease-out 0.5s both;
+}
+
+@keyframes btnEntrance {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .section { padding: 100px 0; }
