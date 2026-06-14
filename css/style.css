@@ -718,3 +718,38 @@ body {
   50% { transform: rotate(180deg) scale(1.1); }
   100% { transform: rotate(360deg) scale(1); }
 }
+
+.music-tooltip {
+  position: fixed;
+  bottom: 30px;
+  right: 84px;
+  background: var(--green-700);
+  color: var(--white);
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 1500;
+  pointer-events: none;
+  animation: tooltipBounce 2s infinite;
+  white-space: nowrap;
+  transition: opacity 0.5s;
+}
+.music-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--green-700);
+}
+@keyframes tooltipBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-6px); }
+}
+.music-tooltip.fade-out {
+  opacity: 0;
+}

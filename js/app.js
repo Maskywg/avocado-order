@@ -381,11 +381,13 @@ document.addEventListener('click', function(e) {
 function toggleMusic() {
   const music = document.getElementById('bgMusic');
   const btn = document.getElementById('musicToggle');
+  const tooltip = document.getElementById('musicTooltip');
   if (!music || !btn) return;
   if (music.paused) {
     music.play().then(() => {
       btn.classList.add('playing');
       btn.textContent = '🎵';
+      if (tooltip) tooltip.classList.add('fade-out');
       showToast('🎵 音樂已開啟');
     }).catch(() => {
       showToast('❌ 無法播放音樂，請先點擊網頁');
@@ -402,10 +404,12 @@ function initAutoplayMusic() {
   const startPlay = () => {
     const music = document.getElementById('bgMusic');
     const btn = document.getElementById('musicToggle');
+    const tooltip = document.getElementById('musicTooltip');
     if (music && btn && music.paused) {
       music.play().then(() => {
         btn.classList.add('playing');
         btn.textContent = '🎵';
+        if (tooltip) tooltip.classList.add('fade-out');
       }).catch(() => {});
     }
     document.removeEventListener('click', startPlay);
